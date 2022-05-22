@@ -9,11 +9,6 @@ fclose(fileID);
 bound = 40;
 
 errorRate = comm.ErrorRate;
-channel = comm.AWGNChannel('NoiseMethod','Signal to noise ratio (SNR)');
-bpskmod = comm.PSKModulator(2,0,'BitInput',true);
-bpskdemod = comm.PSKDemodulator(2,0,'BitOutput',true);
-qpskmod = comm.PSKModulator(4,0,'BitInput',true);
-qpskdemod = comm.PSKDemodulator(4,0,'BitOutput',true);
 
 SNR=10:1:40;
 err=zeros(size(SNR));
@@ -27,19 +22,19 @@ for i=1:length(SNR)
         M = 2;
         bs = log2(M);
         x = randi([0 1],bs*1000,1);
-        tx= bpskmod(x);
-        rx = channel(tx);
-        decoded = bpskdemod(rx);
+        tx= pskmod(x,2);
+        rx = awgn(tx,SNR(i),'measured');
+        decoded = pskdemod(rx,2);
                
     elseif(a(2)<=SNR(i)<a(3))
         
         %QPSK
         M = 4;
         bs = log2(M);
-        x = randi([0 1],bs*1000,1);
-        tx= qpskmod(x);
-        rx = channel(tx);
-        decoded = qpskdemod(rx);
+        x = randi([0 3],1000,1);
+        tx= pskmod(x,4);
+        rx = awgn(tx,SNR(i),'measured');
+        decoded = pskdemod(rx,4);
     
     elseif(a(3)<=SNR(i)<a(4))
         

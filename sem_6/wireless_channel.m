@@ -3,11 +3,11 @@ clear all;
 close all;
 
 % Sampling Frequency
-fs = 4000 ;
+fs = 8000 ;
 % Frequency 1
-f1 = 1000;
+f1 = 2000;
 % Frequency 2
-f2 = 800;
+f2 = 500;
 ts = 0:(1/fs):1-(1/fs);
 signal1 = 20*exp(complex(0,2*pi*f1*ts));
 signal2 = 20*exp(complex(0,2*pi*f2*ts));

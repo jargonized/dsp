@@ -9,12 +9,6 @@ ber_16qam = zeros(1,40);
 ber_64qam = zeros(1,40);
 
 errorRate = comm.ErrorRate;
-channel = comm.AWGNChannel('NoiseMethod','Signal to noise ratio (SNR)');
-bpskmod = comm.PSKModulator(2,0,'BitInput',true);
-bpskdemod = comm.PSKDemodulator(2,0,'BitOutput',true);
-qpskmod = comm.PSKModulator(4,0,'BitInput',true);
-qpskdemod = comm.PSKDemodulator(4,0,'BitOutput',true);
-
 
 for j=1:10
     for snr=1:length(SNR)
@@ -25,10 +19,10 @@ for j=1:10
     reset(errorRate);
     M = 2;
     bs = log2(M);
-    x = randi([0 1],bs*1000,1);
-    tx= bpskmod(x);
-    rx = channel(tx);
-    decoded = bpskdemod(rx);
+    x = randi([0 1],1000,1);
+    tx= pskmod(x,2);
+    rx = awgn(tx,SNR(snr),'measured');
+    decoded = pskdemod(rx,2);
     r = errorRate(x,decoded);
     if (r(1)==0) 
         ber_bpsk(snr) = ber_bpsk(snr) + 1e-7;
@@ -44,10 +38,10 @@ for j=1:10
     r = [0 0 0];
     M = 4;
     bs = log2(M);
-    x = randi([0 1],bs*1000,1);
-    tx= qpskmod(x);
-    rx = channel(tx);
-    decoded = qpskdemod(rx);
+    x = randi([0 3],1000,1);
+    tx= pskmod(x,4);
+    rx = awgn(tx,SNR(snr),'measured');
+    decoded = pskdemod(rx,4);
     r = errorRate(x,decoded);
     if (r(1)==0) 
         ber_qpsk(snr) = ber_qpsk(snr) + 1e-7;

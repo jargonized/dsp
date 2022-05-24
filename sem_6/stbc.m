@@ -11,9 +11,9 @@ n_sym = 10000;
 x_ip = randi([0 1],n_sym,1);
 tx = pskmod(x_ip,2);
 tx_1 = tx;
-h = 1/sqrt(2)*(randi([0 10],1,n_sym)+2*i*randi([0 10],1,n_sym));
+h = 1/sqrt(2)*(randi([0 10],n_sym,1)+2*i*randi([0 10],n_sym,1));
 h_sym = reshape(h,2,n_sym/2);
-h = reshape(h,n_sym,1);
+
 y = zeros(2,n_sym/2);
 decoded = zeros(2,n_sym/2);
 ber = [];ber_wo=[]; ber_wo1 = [];
@@ -24,7 +24,7 @@ tx = reshape(tx,2,n_sym/2);
 for j = 1:length(snr)
 
 for i = 1:n_sym/2
-    H = [h_sym(1,i) h_sym(2,i); -conj(h_sym(2,i)) conj(h_sym(1,i))];
+    H = [h_sym(1,i) h_sym(2,i); conj(h_sym(2,i)) -conj(h_sym(1,i))];
     y(: ,i) = H*tx(:,i);
 end
 
@@ -32,8 +32,8 @@ rec = awgn(y,snr(j),'measured');
 decoded = zeros(2,n_sym/2);
     
 for i = 1:n_sym/2
-    H = [h_sym(1,i) h_sym(2,i); -conj(h_sym(2,i)) conj(h_sym(1,i))];
-    H_pseudo = inv(inv(H)*H)*inv(H);
+    H = [h_sym(1,i) h_sym(2,i); conj(h_sym(2,i)) -conj(h_sym(1,i))];
+    H_pseudo = inv(H'*H)*(H');
     x_p(:,i) = H_pseudo*rec(:,i);
     decoded(:,i) = x_p(:,i);
 end
@@ -55,7 +55,7 @@ end
      %WITHOUT STBC - TIME DIVERSITY
 
     for i = 1:n_sym/2
-        H = [h_sym(1,1) h_sym(1,1); -conj(h_sym(1,1)) conj(h_sym(1,1))];
+        H = [h_sym(1,1) h_sym(1,1); conj(h_sym(1,1)) -conj(h_sym(1,1))];
         y(: ,i) = H*tx(:,i);
     end
     
@@ -63,9 +63,9 @@ end
     decoded = zeros(2,n_sym/2);
         
     for i = 1:n_sym/2
-        H = [h_sym(1,1) h_sym(1,1); -conj(h_sym(1,1)) conj(h_sym(1,1))];
+        H = [h_sym(1,1) h_sym(1,1); conj(h_sym(1,1)) -conj(h_sym(1,1))];
         %H_pseudo = (inv(H'*H))'*inv(H);
-        H_pseudo = inv(inv(H)*H)*inv(H);
+        H_pseudo = inv(H'*H)*(H');
         x_p(:,i) = H_pseudo*rec(:,i);
         %x_p(:,i) = H_pseudo*[rec(1,i) ; conj(rec(2,i))];
         decoded(:,i) = x_p(:,i);

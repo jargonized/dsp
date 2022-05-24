@@ -7,9 +7,9 @@ berf=[];
 N = 64^3;
 N1= 256^3;
 N2= 128^3;
-b1 = randi([0 1], N, 1);
-b2 = randi([0 1], N1, 1);
-b3 = randi([0 1], N2, 1);
+b1 = randi([0 3], N, 1);
+b2 = randi([0 3], N1, 1);
+b3 = randi([0 3], N2, 1);
 %% Modulation
 ymod1 = pskmod(b1, 4);
 ymod2 = pskmod(b2, 4);
